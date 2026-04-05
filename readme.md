@@ -30,7 +30,7 @@ O FRETO é uma plataforma moderna de logística que conecta clientes que precisa
 - Github actions (CI/CD)
 
 ### Arquitetura
-- Arquitetura Hexagonal
+- Arquitetura Orientada a Eventos e Micro-Serviços
 - Processamento Assíncrono com mensageria (RabbitMQ)
 
 ## Documentação
