@@ -11,6 +11,13 @@
       rel="stylesheet"
     />
 
+    <script>
+      const redirect = sessionStorage.getItem("redirect");
+      if (redirect) {
+        sessionStorage.removeItem("redirect");
+        window.history.replaceState(null, "", redirect);
+      }
+    </script>
     <title>Freto</title>
   </head>
   <body>

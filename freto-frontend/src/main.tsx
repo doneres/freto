@@ -2,9 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./index.css";
+import ForgotPasswordPage from "./pages/ForgotPassword/index.tsx";
 import LoginPage from "./pages/Login/index.tsx";
 import RegisterPage from "./pages/Register/index.tsx";
-import ForgotPasswordPage from "./pages/ForgotPassword/index.tsx";
 import SuccessPage from "./pages/Success/index.tsx";
 
 createRoot(document.getElementById("root")!).render(
