@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.freto.usuarioService.dto.CreateUserDTO;
 import com.freto.usuarioService.dto.UserResponseDTO;
+import com.freto.usuarioService.event.UserCreatedEvent;
+import com.freto.usuarioService.event.UserEventPublisher;
 import com.freto.usuarioService.exception.EmailAlreadyExistsException;
 import com.freto.usuarioService.model.User;
 import com.freto.usuarioService.repository.UserRepository;
@@ -21,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserEventPublisher userEventPublisher;
 
     @Override
     public UserResponseDTO createUser(CreateUserDTO dto) {
@@ -40,6 +43,9 @@ public class UserServiceImpl implements UserService {
         user.setRole(dto.role());
 
         User savedUser = userRepository.save(user);
+
+        userEventPublisher.publishUserCreated(
+                new UserCreatedEvent(savedUser.getName(), savedUser.getEmail()));
 
         return new UserResponseDTO(savedUser.getId(), savedUser.getName(), savedUser.getEmail(), savedUser.getRole());
     }
