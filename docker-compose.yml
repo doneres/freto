@@ -10,7 +10,7 @@ services:
 
   usuario-service:
     build:
-      context: ./freto-backend/usuario-service
+      context: ./freto-backend/usuario-service/
       dockerfile: Dockerfile
     ports:
       - "8081:8080"
