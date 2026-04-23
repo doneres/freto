@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthLayout } from "../../components/AuthLayout";
 import registerIllustration from "../../assets/illustration-register.svg";
+import { createUser } from "../../services/userService";
 
 type UserType = "cliente" | "motorista";
 
@@ -10,18 +11,43 @@ export default function RegisterPage() {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
   });
 
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrorMessage("");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: implementar cadastro
+
+    setLoading(true);
+
+    try {
+      await createUser({
+        name: form.name,
+        email: form.email,
+        phoneNumber: form.phoneNumber,
+        password: form.password,
+        confirmPassword: form.confirmPassword,
+        role: userType === "cliente" ? "CONTRATANTE" : "TRANSPORTADOR",
+      });
+      navigate("/success");
+    } catch (error: any) {
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Erro ao criar conta. Tente novamente.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,7 +69,7 @@ export default function RegisterPage() {
             <img
               src={registerIllustration}
               alt="Ilustração de entregador"
-              className="w-full max-w-[280px] max-h-[180px] object-contain mx-auto mt-4"
+              className="w-full max-w-70 max-h-45 object-contain mx-auto mt-4"
             />
           </div>
 
@@ -119,9 +145,9 @@ export default function RegisterPage() {
             </label>
             <input
               type="tel"
-              name="phone"
+              name="phoneNumber"
               placeholder="(99) 9 9999 – 9999"
-              value={form.phone}
+              value={form.phoneNumber}
               onChange={handleChange}
               className="border border-gray-200 rounded-lg px-4 py-2 text-sm placeholder:text-gray-400 outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/10 transition"
             />
@@ -155,10 +181,14 @@ export default function RegisterPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#7C3AED] hover:bg-[#5B21B6] text-white font-semibold py-3 rounded-full transition mt-1"
+            disabled={loading}
+            className="w-full bg-[#7C3AED] hover:bg-[#5B21B6] text-white font-semibold py-3 rounded-full transition mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Criar conta grátis
+            {loading ? "Criando conta..." : "Criar conta grátis"}
           </button>
+          {errorMessage && (
+            <p className="text-red-500 text-sm text-center">{errorMessage}</p>
+          )}
         </form>
 
         <p className="text-sm text-gray-500 text-center">
