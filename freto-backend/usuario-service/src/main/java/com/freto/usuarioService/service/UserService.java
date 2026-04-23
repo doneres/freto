@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.freto.usuarioService.dto.CreateUserDTO;
+import com.freto.usuarioService.dto.UpdatePasswordDTO;
+import com.freto.usuarioService.dto.UpdateUserDTO;
 import com.freto.usuarioService.dto.UserResponseDTO;
 
 public interface UserService {
@@ -13,7 +15,9 @@ public interface UserService {
 
     List<UserResponseDTO> getAllUsers();
 
-    UserResponseDTO updateUser(UUID id, CreateUserDTO dto);
+    UserResponseDTO updateUser(UUID id, UpdateUserDTO dto);
+
+    void updatePassword(UUID id, UpdatePasswordDTO dto);
 
     void deleteUser(UUID id);
 }
