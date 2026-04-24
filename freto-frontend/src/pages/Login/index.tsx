@@ -1,15 +1,32 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthLayout } from "../../components/AuthLayout";
 import loginIllustration from "../../assets/illustration-login.svg";
+import { loginUser } from "../../services/userService";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: implementar autenticação
+    setLoading(true);
+
+    try {
+      const response = await loginUser({ email, password });
+      localStorage.setItem("token", response.token); // armazena o token
+      navigate("/dashboard");
+    } catch (error: any) {
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Erro ao fazer login. Tente novamente.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -97,10 +114,15 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#7C3AED] hover:bg-[#5B21B6] text-white font-semibold py-3 rounded-full transition mt-2"
+            disabled={loading}
+            className="w-full bg-[#7C3AED] hover:bg-[#5B21B6] text-white font-semibold py-3 rounded-full transition mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Entrar na conta
+            {loading ? "Entrando..." : "Entrar na conta"}
           </button>
+
+          {errorMessage && (
+            <p className="text-red-500 text-sm text-center">{errorMessage}</p>
+          )}
         </form>
 
         <p className="text-sm text-gray-500 text-center">
