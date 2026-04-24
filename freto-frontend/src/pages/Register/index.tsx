@@ -39,6 +39,7 @@ export default function RegisterPage() {
         confirmPassword: form.confirmPassword,
         role: userType === "cliente" ? "CONTRATANTE" : "TRANSPORTADOR",
       });
+
       navigate("/success");
     } catch (error: any) {
       setErrorMessage(
