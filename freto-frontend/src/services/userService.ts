@@ -13,3 +13,13 @@ export async function createUser(data: CreateUserData) {
   const response = await api.post("/api/users", data);
   return response.data;
 }
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export async function loginUser(data: LoginData) {
+  const response = await api.post("/api/auth/login", data);
+  return response.data;
+}
