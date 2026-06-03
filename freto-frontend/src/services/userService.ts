@@ -23,3 +23,13 @@ export async function loginUser(data: LoginData) {
   const response = await api.post("/api/auth/login", data);
   return response.data;
 }
+
+export interface ResetPasswordData {
+  email: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export async function resetPassword(data: ResetPasswordData) {
+  await api.post("/api/auth/reset-password", data);
+}

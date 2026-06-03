@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.freto.usuarioService.dto.LoginRequestDTO;
 import com.freto.usuarioService.dto.LoginResponseDTO;
+import com.freto.usuarioService.dto.ResetPasswordDTO;
 import com.freto.usuarioService.exception.PasswordNotMatchException;
 import com.freto.usuarioService.exception.UserNotFoundException;
 import com.freto.usuarioService.model.User;
@@ -39,5 +40,20 @@ public class AuthController {
         String token = jwtService.generateToken(user.getEmail());
 
         return ResponseEntity.ok(new LoginResponseDTO(token, user.getId(), user.getName(), user.getRole()));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
+        User user = userRepository.findByEmail(dto.email())
+                .orElseThrow(() -> new UserNotFoundException("E-mail não encontrado."));
+
+        if (!dto.newPassword().equals(dto.confirmNewPassword())) {
+            throw new PasswordNotMatchException("As senhas não coincidem.");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.newPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.noContent().build();
     }
 }
