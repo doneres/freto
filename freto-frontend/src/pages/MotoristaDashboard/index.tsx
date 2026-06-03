@@ -5,7 +5,7 @@ import {
   aceitarPedido,
   atualizarStatus,
 } from "../../services/pedidoService";
-import { Pedido } from "../../types/pedido";
+import type { Pedido } from "../../types/pedido";
 
 const PROXIMOS_STATUS: Record<string, string | null> = {
   MOTORISTA_ENCONTRADO: "EM_TRANSITO",

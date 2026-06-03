@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { Pedido } from "../types/pedido";
+import type { Pedido } from "../types/pedido";
 
 const WS_URL = import.meta.env.VITE_WS_URL || "http://localhost:8082/ws";
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthLayout } from "../../components/AuthLayout";
 import registerIllustration from "../../assets/illustration-register.svg";
-import { createUser } from "../../services/userService";
+import { createUser, loginUser } from "../../services/userService";
 
 type UserType = "cliente" | "motorista";
 
@@ -40,7 +40,14 @@ export default function RegisterPage() {
         role: userType === "cliente" ? "CONTRATANTE" : "TRANSPORTADOR",
       });
 
-      navigate("/success");
+      // Login automático após cadastro
+      const session = await loginUser({ email: form.email, password: form.password });
+      localStorage.setItem("token", session.token);
+      localStorage.setItem("clienteId", session.id);
+      localStorage.setItem("role", session.role);
+      localStorage.setItem("name", session.name);
+
+      navigate(session.role === "TRANSPORTADOR" ? "/motorista" : "/dashboard");
     } catch (error: any) {
       setErrorMessage(
         error.response?.data?.message ||

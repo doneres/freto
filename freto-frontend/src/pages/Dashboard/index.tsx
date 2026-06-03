@@ -5,7 +5,7 @@ import {
   listarPedidosPorCliente,
   cancelarPedido,
 } from "../../services/pedidoService";
-import { Pedido } from "../../types/pedido";
+import type { Pedido } from "../../types/pedido";
 import { usePedidoWebSocket } from "../../hooks/usePedidoWebSocket";
 
 const STATUS_LABEL: Record<string, string> = {

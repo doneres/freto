@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CreatePedidoPayload, Pedido } from "../types/pedido";
+import type { CreatePedidoPayload, Pedido } from "../types/pedido";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_PEDIDO_API_URL || "http://localhost:8082",
