@@ -44,7 +44,7 @@ O FRETO é uma plataforma moderna de logística que conecta clientes que precisa
 
 ## Desenvolvedores
 
-### Arthur Vanzim
+### Arthur Vanzin
 <img src="https://github.com/Arthur-ADS.png" width="120" style="border-radius: 50%; margin-bottom: 10px;" alt="Arthur Vanzim">
 
 [![github](https://skillicons.dev/icons?i=github)](https://github.com/Arthur-ADS) [![email](https://skillicons.dev/icons?i=gmail)](mailto:)
