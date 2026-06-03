@@ -17,8 +17,16 @@ export default function LoginPage() {
 
     try {
       const response = await loginUser({ email, password });
-      localStorage.setItem("token", response.token); // armazena o token
-      navigate("/dashboard");
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("clienteId", response.id);
+      localStorage.setItem("role", response.role);
+      localStorage.setItem("name", response.name);
+
+      if (response.role === "TRANSPORTADOR") {
+        navigate("/motorista");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error: any) {
       setErrorMessage(
         error.response?.data?.message ||
