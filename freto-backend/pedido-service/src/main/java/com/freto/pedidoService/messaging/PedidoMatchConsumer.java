@@ -2,6 +2,7 @@ package com.freto.pedidoService.messaging;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -36,12 +37,17 @@ public class PedidoMatchConsumer {
     public void processarPedido(PedidoCriadoEvent event) {
         log.info("Pedido recebido na fila: {}", event.getPedidoId());
 
-        try {
-            // Simula processamento assíncrono (ex: busca de motorista disponível)
-            Thread.sleep(3000);
+        // Delega o trabalho bloqueante a uma thread separada para não segurar o consumer
+        CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.error("Matching interrompido para pedido {}", event.getPedidoId());
+                return;
+            }
 
             pedidoRepository.findById(event.getPedidoId()).ifPresent(pedido -> {
-                // Simula motorista encontrado (em produção: consultar serviço de motoristas)
                 UUID motoristaSimulado = UUID.randomUUID();
 
                 pedido.setStatus(PedidoStatus.MOTORISTA_ENCONTRADO);
@@ -51,19 +57,10 @@ public class PedidoMatchConsumer {
 
                 log.info("Motorista encontrado para pedido {}: motorista {}", pedido.getId(), motoristaSimulado);
 
-                // Notifica o cliente via WebSocket
                 PedidoResponseDTO response = toResponseDTO(pedido);
-                messagingTemplate.convertAndSend(
-                        "/topic/pedidos/" + pedido.getId(),
-                        response
-                );
-
-                log.info("Status atualizado via WebSocket para pedido {}", pedido.getId());
+                messagingTemplate.convertAndSend("/topic/pedidos/" + pedido.getId(), response);
             });
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            log.error("Erro ao processar pedido: {}", e.getMessage());
-        }
+        });
     }
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_PEDIDO_STATUS)

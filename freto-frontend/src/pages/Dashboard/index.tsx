@@ -33,8 +33,7 @@ export default function DashboardPage() {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [erro, setErro] = useState("");
 
-  // Simula ID do cliente logado (em produção: extrair do JWT)
-  const clienteId = localStorage.getItem("clienteId") || "";
+  const clienteId = localStorage.getItem("clienteId") ?? "";
 
   // WebSocket: escuta atualizações do pedido ativo
   const pedidoAtualizado = usePedidoWebSocket(pedidoAtivoId);
@@ -73,6 +72,10 @@ export default function DashboardPage() {
     e.preventDefault();
     if (!form.origem || !form.destino) {
       setErro("Origem e destino são obrigatórios.");
+      return;
+    }
+    if (!clienteId) {
+      navigate("/login");
       return;
     }
     setLoading(true);

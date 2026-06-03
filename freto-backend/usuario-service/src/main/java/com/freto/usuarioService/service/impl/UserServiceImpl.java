@@ -75,6 +75,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
+                .filter(User::isActive)
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -111,8 +112,8 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO updateUser(UUID id, UpdateUserDTO dto) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        user.setName(dto.name());
-        user.setPhoneNumber(dto.phoneNumber());
+        if (dto.name() != null) user.setName(dto.name());
+        if (dto.phoneNumber() != null) user.setPhoneNumber(dto.phoneNumber());
 
         userRepository.save(user);
 
