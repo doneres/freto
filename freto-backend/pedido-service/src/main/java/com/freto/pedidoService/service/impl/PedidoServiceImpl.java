@@ -120,8 +120,8 @@ public class PedidoServiceImpl implements PedidoService {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new PedidoNotFoundException("Pedido não encontrado: " + id));
 
-        if (pedido.getStatus() == PedidoStatus.ENTREGUE) {
-            throw new PedidoStatusInvalidoException("Pedidos já entregues não podem ser cancelados.");
+        if (pedido.getStatus() == PedidoStatus.ENTREGUE || pedido.getStatus() == PedidoStatus.CANCELADO) {
+            throw new PedidoStatusInvalidoException("Pedido não pode ser cancelado no status atual: " + pedido.getStatus());
         }
 
         pedido.setStatus(PedidoStatus.CANCELADO);
